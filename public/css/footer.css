@@ -1,0 +1,25 @@
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    padding: 8px 16px; /* ⬅️ Reduced padding for smaller height */
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* ⬅️ Smaller vertical gap */
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: center; /* ⬅️ Center on wider screens too */
+        gap: 20px; /* Optional horizontal spacing between items */
+    }
+}
