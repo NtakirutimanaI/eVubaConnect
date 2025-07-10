@@ -380,7 +380,7 @@ body {
     transition: width 0.3s;
     overflow-x: hidden;
     position: fixed;
-    top: 80px;
+    top: 73px;
     left: 8px;
     z-index: 100;
     clip-path: path("M0 0 Q 60 0 60 40 L60 100vh L0 100vh Z");
@@ -963,3 +963,8 @@ body {
         padding: 12px;
     }
 }
+
+body {
+    padding-bottom: 60px; /* adjust this based on your footer height */
+}
+

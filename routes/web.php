@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SchedulingController;
+
 
 Route::get('/', function () {
     return view('admin.index');
@@ -38,3 +40,19 @@ Route::get('ai/dashboard', [HomeController::class, 'ai'])->name('ai.dashboard')-
 Route::get('/', function () {
     return view('admin.index');
 })->name('dashboard');
+
+
+// Scheduling Routes
+Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling');
+
+Route::prefix('admin')->group(function () {
+    Route::get('/scheduling', [SchedulingController::class, 'index'])->name('admin.scheduling');
+    Route::post('/scheduling', [SchedulingController::class, 'store'])->name('scheduling.store');
+    Route::post('/scheduling/auto', [SchedulingController::class, 'autoSchedule'])->name('scheduling.auto'); // ✅ ADD THIS
+    Route::get('/scheduling/create', [SchedulingController::class, 'create'])->name('scheduling.create');
+    Route::get('/scheduling/{id}/edit', [SchedulingController::class, 'edit'])->name('scheduling.edit');
+    Route::put('/scheduling/{id}', [SchedulingController::class, 'update'])->name('scheduling.update');
+    Route::delete('/scheduling/{id}', [SchedulingController::class, 'destroy'])->name('scheduling.destroy');
+});
+Route::post('/admin/scheduling/auto', [SchedulingController::class, 'autoSchedule'])->name('scheduling.auto');
+Route::post('/admin/scheduling/auto', [SchedulingController::class, 'auto'])->name('scheduling.auto');

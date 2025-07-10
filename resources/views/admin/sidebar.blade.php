@@ -9,7 +9,7 @@
             </a>
         </li>
         <li>
-            <a href="#" title="Scheduling System" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
+            <a href="{{ route('scheduling') }}" title="Scheduling System" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
                 <img src="https://img.icons8.com/ios-filled/50/000000/timeline-week.png" class="icon" alt="Scheduling Icon" style="margin-right: 8px;" />
                 <span class="label">Scheduling</span>
             </a>
