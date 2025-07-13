@@ -361,6 +361,31 @@ h2, h3 {
     }
 }
 
+.btn-group .btn {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 4px;
+        margin: 2px;
+        text-decoration: none;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-info { background-color: #17a2b8; }
+    .btn-primary { background-color: #007bff; }
+    .btn-secondary { background-color: #6c757d; }
+    .btn-danger { background-color: #dc3545; }
+
+    .btn:hover {
+        opacity: 0.85;
+    }
+
+    table th, table td {
+        vertical-align: middle;
+        font-size: 13px;
+    }
 </style>
 
 <div class="inventory-container">
@@ -456,32 +481,53 @@ h2, h3 {
     </div>
 
     <h3>🗓️ Existing Appointments</h3>
-    <table>
-        <thead>
+    <table class="table table-bordered table-striped">
+    <thead style="background-color: #f2f2f2;">
+        <tr>
+            <th>Client</th>
+            <th>Employee</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse($appointments as $appointment)
             <tr>
-                <th>Client</th>
-                <th>Employee</th>
-                <th>Service</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
+                <td>{{ $appointment->client->full_name ?? $appointment->client->name }}</td>
+                <td>{{ $appointment->employee->name }}</td>
+                <td>{{ $appointment->service->name }}</td>
+                <td>{{ \Carbon\Carbon::parse($appointment->scheduled_date)->format('Y-m-d') }}</td>
+                <td>{{ $appointment->start_time }} - {{ $appointment->end_time }}</td>
+                <td>{{ ucfirst($appointment->status) }}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('appointments.show', $appointment->id) }}" class="btn btn-info btn-sm" title="View">
+                            🔍 View
+                        </a>
+                        <a href="{{ route('appointments.notifyClient', $appointment->id) }}" class="btn btn-primary btn-sm" title="Notify Client">
+                            📩 Client
+                        </a>
+                        <a href="{{ route('appointments.notifyEmployee', $appointment->id) }}" class="btn btn-secondary btn-sm" title="Notify Employee">
+                            🧑‍💼 Employee
+                        </a>
+                        <form action="{{ route('appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this appointment?');" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                🗑️ Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @forelse($appointments as $appointment)
-                <tr>
-                    <td>{{ $appointment->client->full_name ?? $appointment->client->name }}</td>
-                    <td>{{ $appointment->employee->name }}</td>
-                    <td>{{ $appointment->service->name }}</td>
-                    <td>{{ \Carbon\Carbon::parse($appointment->scheduled_date)->format('Y-m-d') }}</td>
-                    <td>{{ $appointment->start_time }} - {{ $appointment->end_time }}</td>
-                    <td>{{ ucfirst($appointment->status) }}</td>
-                </tr>
-            @empty
-                <tr><td colspan="6" class="text-center">No appointments found.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+        @empty
+            <tr><td colspan="7" class="text-center">No appointments found.</td></tr>
+        @endforelse
+    </tbody>
+</table>
 
     {{-- Pagination --}}
     <div class="pagination-container">

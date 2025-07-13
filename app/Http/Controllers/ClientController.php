@@ -33,7 +33,7 @@ class ClientController extends Controller
 
         Client::create($validated);
 
-        return redirect()->route('clients.index')->with('success', 'Client added successfully.');
+        return redirect()->route('clients')->with('success', 'Client added successfully.');
     }
 
     // Show a single client (GET /clients/{client})
@@ -62,7 +62,7 @@ class ClientController extends Controller
 
         $client->update($validated);
 
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+        return redirect()->route('clients')->with('success', 'Client updated successfully.');
     }
 
     // Delete a client (DELETE /clients/{client})
@@ -70,6 +70,6 @@ class ClientController extends Controller
     {
         $client->delete();
 
-        return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+        return redirect()->route('clients')->with('success', 'Client deleted successfully.');
     }
 }

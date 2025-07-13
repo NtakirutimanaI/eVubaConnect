@@ -10,6 +10,10 @@ use App\Http\Controllers\WorkforceController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\AppointmentController;
+
 
 Route::get('/', function () {
     return view('admin.index');
@@ -54,10 +58,33 @@ Route::post('/scheduling', [SchedulingController::class, 'store'])->name('schedu
 
 
 // Others
+
+Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+
 Route::post('/clients/store', [ClientController::class, 'store'])->name('clients.store');
 Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
 Route::post('/services/store', [ServiceController::class, 'store'])->name('services.store');
 Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+Route::resource('employees', EmployeeController::class);
+Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+// routes/web.php
+Route::get('admin/services', [ServiceController::class, 'index'])->name('admin.services');
+Route::get('appointments/{id}', [AppointmentController::class, 'show'])->name('appointments.show');
+Route::get('appointments/{id}/notify-client', [AppointmentController::class, 'notifyClient'])->name('appointments.notifyClient');
+Route::get('appointments/{id}/notify-employee', [AppointmentController::class, 'notifyEmployee'])->name('appointments.notifyEmployee');
+Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+
+
+//Appointments function Controllers
+
+Route::prefix('admin')->name('appointments.')->group(function () {
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('index');
+    Route::post('/appointments', [AppointmentController::class, 'store'])->name('store');
+    Route::get('/appointments/{id}', [AppointmentController::class, 'show'])->name('show');
+    Route::get('/appointments/{id}/notify-client', [AppointmentController::class, 'notifyClient'])->name('notifyClient');
+    Route::get('/appointments/{id}/notify-employee', [AppointmentController::class, 'notifyEmployee'])->name('notifyEmployee');
+    Route::delete('/appointments/{id}', [AppointmentController::class, 'destroy'])->name('destroy');
+});
 
 
 //Inventory

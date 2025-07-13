@@ -1,5 +1,14 @@
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+
+<!-- Hamburger Button -->
+<div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <ul class="sidebar-menu">
         <li>
@@ -52,10 +61,6 @@
         </li>
     </ul>
 </div>
-
-<script>
-    lucide.createIcons();
-</script>
 
 @section('scripts')
     <script src="{{ asset('js/script.js') }}"></script>
