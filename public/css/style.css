@@ -451,6 +451,8 @@ body {
     padding: 30px;
     padding-left: 250px; /* ⬅️ added */
     background-color: #f7f6fb;
+    margin-top: 55px;
+    display: flex;
 }
 
 .dashboard-title h1 {
@@ -735,10 +737,6 @@ body {
         display: none;
     }
 
-    .dashboard-header {
-        padding-left: 13px;
-        padding-right: 13px;
-    }
 
     .revenue-card {
         width: 100%;

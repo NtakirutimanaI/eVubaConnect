@@ -15,7 +15,7 @@
             </a>
         </li>
         <li>
-            <a href="#" title="Inventory" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
+            <a href="{{ route('inventory') }}" title="Inventory" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
                 <img src="https://img.icons8.com/ios-filled/50/000000/documents.png" class="icon" alt="Inventory Icon" style="margin-right: 8px;" />
                 <span class="label">Inventory</span>
             </a>
@@ -27,13 +27,13 @@
             </a>
         </li>
         <li>
-            <a href="#" title="Analytics & Reporting" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
+            <a href="{{ route('analytics') }}" title="Analytics & Reporting" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
                 <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart--v1.png" class="icon" alt="Analytics Icon" style="margin-right: 8px;" />
                 <span class="label">Analytics</span>
             </a>
         </li>
         <li>
-            <a href="#" title="Reports" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
+            <a href="{{ route('reports') }}" title="Reports" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
                 <img src="https://img.icons8.com/ios-filled/50/000000/news.png" class="icon" alt="Reports Icon" style="margin-right: 8px;" />
                 <span class="label">Reports</span>
             </a>

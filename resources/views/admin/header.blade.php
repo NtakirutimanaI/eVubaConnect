@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('css/header.css') }}">
 
 <div class="topbar">
     {{-- Logo --}}

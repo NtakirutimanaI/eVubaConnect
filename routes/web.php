@@ -4,7 +4,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SchedulingController;
-
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\WorkforceController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ClientController;
 
 Route::get('/', function () {
     return view('admin.index');
@@ -43,16 +48,63 @@ Route::get('/', function () {
 
 
 // Scheduling Routes
-Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling');
+Route::get('/admin/scheduling', [SchedulingController::class, 'index'])->name('scheduling');
+Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
+Route::post('/scheduling', [SchedulingController::class, 'store'])->name('scheduling.store');
+
+
+// Others
+Route::post('/clients/store', [ClientController::class, 'store'])->name('clients.store');
+Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
+Route::post('/services/store', [ServiceController::class, 'store'])->name('services.store');
+Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+
+
+//Inventory
+Route::get('/admin/inventory', [InventoryController::class, 'index'])->name('inventory');
+Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+Route::put('/inventory/{product}', [InventoryController::class, 'update'])->name('inventory.update');
+Route::patch('/inventory/{product}/restock', [InventoryController::class, 'restock'])->name('inventory.restock');
+Route::delete('/inventory/{product}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+
+//WorkForce
 
 Route::prefix('admin')->group(function () {
-    Route::get('/scheduling', [SchedulingController::class, 'index'])->name('admin.scheduling');
-    Route::post('/scheduling', [SchedulingController::class, 'store'])->name('scheduling.store');
-    Route::post('/scheduling/auto', [SchedulingController::class, 'autoSchedule'])->name('scheduling.auto'); // ✅ ADD THIS
-    Route::get('/scheduling/create', [SchedulingController::class, 'create'])->name('scheduling.create');
-    Route::get('/scheduling/{id}/edit', [SchedulingController::class, 'edit'])->name('scheduling.edit');
-    Route::put('/scheduling/{id}', [SchedulingController::class, 'update'])->name('scheduling.update');
-    Route::delete('/scheduling/{id}', [SchedulingController::class, 'destroy'])->name('scheduling.destroy');
+    Route::get('/workforce', [WorkforceController::class, 'index'])->name('workforce.index');
+    Route::post('/workforce', [WorkforceController::class, 'store'])->name('workforce.store');
+    Route::put('/workforce/{id}', [WorkforceController::class, 'update'])->name('workforce.update');
+    Route::patch('/workforce/{id}/status', [WorkforceController::class, 'changeStatus'])->name('workforce.changeStatus');
+    Route::delete('/workforce/{id}', [WorkforceController::class, 'destroy'])->name('workforce.destroy');
 });
-Route::post('/admin/scheduling/auto', [SchedulingController::class, 'autoSchedule'])->name('scheduling.auto');
-Route::post('/admin/scheduling/auto', [SchedulingController::class, 'auto'])->name('scheduling.auto');
+
+
+// routes/web.php
+Route::resource('supplier', SupplierController::class);
+Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
+
+//Workforce
+
+Route::prefix('admin')->group(function () {
+    Route::get('/workforce', [WorkforceController::class, 'index'])->name('workforce.index');
+    Route::post('/workforce', [WorkforceController::class, 'store'])->name('workforce.store');
+    Route::put('/workforce/{id}', [WorkforceController::class, 'update'])->name('workforce.update');
+    Route::delete('/workforce/{id}', [WorkforceController::class, 'destroy'])->name('workforce.destroy');
+    Route::patch('/workforce/{id}/status', [WorkforceController::class, 'changeStatus'])->name('workforce.changeStatus');
+});
+
+//Analytics
+ Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
+});
+
+
+//Reports
+Route::get('/reports', [ReportController::class, 'index'])->name('reports'); // route('reports')
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index'); // route('admin.reports.index')
+    Route::get('reports/export/{type}', [ReportController::class, 'export'])->name('reports.export');
+});
