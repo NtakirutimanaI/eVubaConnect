@@ -1,0 +1,48 @@
+.mail-hover-container {
+    position: relative;
+    z-index: 2000;
+}
+
+.mail-hover-container .mail-sidebar {
+    display: block;
+    position: absolute;
+    top: -100px; /* display above the current item */
+    left: 120px;
+    width: 130px;
+    background-color: #bec1c4;
+    padding-top: 10px;
+    z-index: 9999;
+    border-left: 2px solid #007bff;
+    border-radius: 0 6px 6px 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.mail-hover-container:hover .mail-sidebar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Optional: Hover effect for menu links */
+.mail-menu li {
+    text-align: left;
+    padding: 6px 12px;
+}
+
+.mail-menu li a {
+    color: #2c3e50;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.mail-menu li a:hover {
+    background-color: #34495e;
+    color: #fff;
+    border-radius: 4px;
+}

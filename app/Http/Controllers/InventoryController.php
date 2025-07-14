@@ -3,22 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product;   // Added this line
+use App\Models\Product;
 use App\Models\Supplier;
+use App\Models\ProductTransaction;
+use Carbon\Carbon;
 
 class InventoryController extends Controller
 {
-    // Your original index method - unchanged
     public function index()
     {
         $items = Product::with('supplier')->latest()->get();
         $suppliers = Supplier::all();
 
-        // Stats
+        // Inventory Stats
         $totalItems   = Product::count();
         $lowStock     = Product::whereColumn('quantity', '<=', 'min_threshold')->count();
         $outOfStock   = Product::where('quantity', '=', 0)->count();
         $recentItems  = Product::where('created_at', '>=', now()->subDays(7))->count();
+
+        // Daily Sales Summary Stats
+        $today = Carbon::today();
+
+        $salesToday = ProductTransaction::where('transaction_type', 'sale')
+            ->whereDate('created_at', $today)
+            ->sum('total');
+
+        $returnsToday = ProductTransaction::where('transaction_type', 'return')
+            ->whereDate('created_at', $today)
+            ->sum('total');
+
+        $profitToday = $salesToday - $returnsToday;
+
+        $transactionsToday = ProductTransaction::whereDate('created_at', $today)->count();
 
         return view('admin.inventory', compact(
             'items',
@@ -26,28 +42,26 @@ class InventoryController extends Controller
             'totalItems',
             'lowStock',
             'outOfStock',
-            'recentItems'
+            'recentItems',
+            'salesToday',
+            'returnsToday',
+            'profitToday',
+            'transactionsToday'
         ));
     }
 
-    // New index method you want added (if you want to use this separately)
     public function indexProducts()
     {
-        // Eager load supplier relationship to avoid N+1 problem
         $products = Product::with('supplier')->get();
-
         return view('products.index', compact('products'));
     }
 
-    // New lowStock method you want added
     public function lowStock()
     {
         $products = Product::whereColumn('quantity', '<=', 'min_threshold')->with('supplier')->get();
-
         return view('products.low_stock', compact('products'));
     }
 
-    // Store new product
     public function store(Request $request)
     {
         $request->validate([
@@ -75,14 +89,12 @@ class InventoryController extends Controller
         return redirect()->route('inventory.index')->with('success', 'Product added successfully.');
     }
 
-    // Show edit form (optional)
     public function edit(Product $product)
     {
         $suppliers = Supplier::all();
         return view('admin.inventory_edit', compact('product', 'suppliers'));
     }
 
-    // Update existing product
     public function update(Request $request, Product $product)
     {
         $request->validate([
@@ -110,15 +122,12 @@ class InventoryController extends Controller
         return redirect()->route('inventory.index')->with('success', 'Product updated successfully.');
     }
 
-    // Delete product
     public function destroy(Product $product)
     {
         $product->delete();
-
         return redirect()->route('inventory.index')->with('success', 'Product deleted successfully.');
     }
 
-    // Restock product (add to existing quantity)
     public function restock(Request $request, Product $product)
     {
         $request->validate([

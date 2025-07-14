@@ -72,4 +72,5 @@ class ClientController extends Controller
 
         return redirect()->route('clients')->with('success', 'Client deleted successfully.');
     }
+    
 }

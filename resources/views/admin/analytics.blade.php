@@ -8,7 +8,7 @@
     body {
         font-size: 11px;
          width: 80%;
-         margin-left: 222px;
+         margin-left: 17.5%;
          margin-top:70px;
     }
     h2 {

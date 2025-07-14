@@ -16,7 +16,7 @@ class WorkforceController extends Controller
         $activeEmployees   = $employees->where('status', 1)->count();
         $inactiveEmployees = $employees->where('status', 0)->count();
 
-        return view('workforce.index', compact(
+        return view('admin.workforce', compact(
             'employees',
             'totalEmployees',
             'activeEmployees',
@@ -41,7 +41,7 @@ class WorkforceController extends Controller
             'status'   => $request->status,
         ]);
 
-        return redirect()->route('workforce.index')->with('success', 'Employee added successfully.');
+        return redirect()->route('admin.workforce')->with('success', 'Employee added successfully.');
     }
 
     // Update an existing employee
@@ -63,7 +63,7 @@ class WorkforceController extends Controller
             'status'   => $request->status,
         ]);
 
-        return redirect()->route('workforce.index')->with('success', 'Employee updated successfully.');
+        return redirect()->route('admin.workforce')->with('success', 'Employee updated successfully.');
     }
 
     // Delete an employee
@@ -72,7 +72,7 @@ class WorkforceController extends Controller
         $employee = Employee::findOrFail($id);
         $employee->delete();
 
-        return redirect()->route('workforce.index')->with('success', 'Employee deleted successfully.');
+        return redirect()->route('admin.workforce')->with('success', 'Employee deleted successfully.');
     }
 
     // Change employee status (Activate/Deactivate)
@@ -89,6 +89,6 @@ class WorkforceController extends Controller
 
         $statusText = $employee->status ? 'activated' : 'deactivated';
 
-        return redirect()->route('workforce.index')->with('success', "Employee {$statusText} successfully.");
+        return redirect()->route('admin.workforce')->with('success', "Employee {$statusText} successfully.");
     }
 }

@@ -14,7 +14,7 @@
 
     .inventory-container {
         width: 81.5%;
-        margin-left: 17%;
+        margin-left: 17.5%;
         margin-top: 10px;
         position: relative;
         font-size: 12px;
@@ -366,6 +366,8 @@
     <div class="button-row">
         <button class="add-btn add-supplier-btn" onclick="openModal('addSupplierModal')">+ Add Supplier</button>
         <button class="add-btn" onclick="openModal('addModal')">+ Add New Item</button>
+        <button class="add-btn add-client-btn" onclick="openModal('addclientModal')">+ Add Client</button>
+        <button class="add-btn" onclick="window.location.href='{{ route('transactions.index') }}'">🧾 View Transactions</button>
     </div>
 
     <div class="stats-grid">
@@ -526,6 +528,35 @@
     </div>
 </div>
 
+
+<!-- Add Client Modal -->
+<div class="modal" id="addclientModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            Add New Client
+            <span class="close-modal" onclick="closeModal('addclientModal')">✖</span>
+        </div>
+        <form method="POST" action="{{ route('client-product.store') }}">
+           @csrf
+           <!-- CLIENT FIELDS -->
+           <input type="text" name="full_name" placeholder="Full Name" required />
+           <input type="email" name="email" placeholder="Email (optional)" />
+           <input type="text" name="phone" placeholder="Phone (optional)" />
+           <input type="text" name="company" placeholder="Company (optional)" />
+           <input type="text" name="address" placeholder="Address (optional)" />
+
+           <!-- PRODUCT FIELDS -->
+           <input type="text" name="product_name" placeholder="Product Name" required />
+           <input type="text" name="category" placeholder="Category/Type" />
+           <input type="number" name="quantity" placeholder="Quantity" step="any" required />
+           <input type="text" name="price" placeholder="Unit Price" step="any" required />
+
+           <button type="submit" class="add-btn">Save Client</button>
+        </form>
+    </div>
+</div>
+
+
 <script>
     function openModal(id) {
         document.getElementById(id).style.display = 'flex';
@@ -637,3 +668,11 @@
 </script>
 
 @include('admin.footer')
+
+
+
+
+
+
+
+

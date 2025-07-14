@@ -5,7 +5,7 @@
 
 <style>
     .report-wrapper {
-        margin-left: 200px;
+        margin-left: 17.5%;
         padding: 40px 30px;
         background-color: #f9fbfc;
         min-height: 100vh;
