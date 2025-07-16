@@ -112,7 +112,7 @@
                     <img src="https://img.icons8.com/ios/24/save-as.png" alt="Drafts Icon"/>Drafts</a></li>
                 <li><a href="{{ route('chats') }}">
                     <img src="https://img.icons8.com/ios/24/speech-bubble--v1.png" alt="Chats Icon"/>Chats</a></li>
-                <li><a href="{{ route('all_mail') }}">
+                <li><a href="{{ route('all_mails') }}">
                     <img src="https://img.icons8.com/ios/24/open-envelope--v1.png" alt="All Mail Icon"/>All Mail</a></li>
                 <li><a href="{{ route('trash') }}">
                     <img src="https://img.icons8.com/ios/24/delete--v1.png" alt="Trash Icon"/>Trash</a></li>

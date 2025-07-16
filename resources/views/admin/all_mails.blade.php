@@ -1,67 +1,231 @@
-<!-- Gmail Style Header -->
-<header style="display: flex; align-items: center; padding: 8px 16px; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-family: Arial, sans-serif;">
+@include('admin.mail_header')
+@include('admin.sidebar')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inbox UI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
 
-  <!-- Hamburger menu -->
-  <button aria-label="Menu" style="background: none; border: none; cursor: pointer; padding: 8px; margin-right: 16px;">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  </button>
+    .container {
+      margin-left: 222px;
+      width: 81.5%;
+    }
 
-  <!-- Gmail logo -->
-  <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" alt="Gmail" style="height: 24px; margin-right: 24px;">
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+    }
 
-  <!-- Search bar container -->
-  <div style="flex-grow: 1; max-width: 720px; position: relative;">
-    <input type="search" placeholder="Search mail" aria-label="Search mail" style="width: 100%; padding: 8px 40px 8px 16px; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; color: #202124; outline-offset: 2px;">
-    
-    <!-- Search icon -->
-    <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;" width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-      <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.03 6.01 12.52 3.5 9.5 3.5S4 6.01 4 9.5 6.52 15.5 9.5 15.5c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-    </svg>
+    .top-bar button, .top-bar a {
+      font-size: 14px;
+      padding: 6px 12px;
+      background-color: #f1f3f4;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #202124;
+      text-decoration: none;
+    }
+
+    .email-list {
+      background: white;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+    }
+
+    .email-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .email-item:first-child {
+      border-top: none;
+    }
+
+    .email-item:hover {
+      background: #f1f3f4;
+    }
+
+    .star, .checkbox {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .sender {
+      font-weight: bold;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+
+    .label {
+      background-color: #e8f0fe;
+      color: #1967d2;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+
+    .subject {
+      flex-grow: 1;
+      color: #333;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .date {
+      font-size: 12px;
+      color: gray;
+      min-width: 60px;
+      text-align: right;
+      margin-left: 6px;
+    }
+
+    footer {
+      font-size: 12px;
+      color: #777;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 10px;
+      background: #f1f1f1;
+      border-top: 1px solid #ccc;
+    }
+
+    footer a {
+      color: #777;
+      text-decoration: none;
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <button>From</button>
+      <button>Any time</button>
+      <button>Has attachment</button>
+      <button>To</button>
+      <button>Is unread</button>
+      <a href="#">Advanced search</a>
+    </div>
+
+    <div class="email-list">
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">LinkedIn</span>
+        <span class="label">Inbox</span>
+        <span class="subject">Innocent, add BIGIRIMANA Celestin - Sales And Marketing Specialist - Engineer, Author...</span>
+        <span class="date">Jun 18</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 18: Get in Line with Queues & Stacks - Day 18 of 30 Days of Code Hi makeitsolutions, Welcome...</span>
+        <span class="date">Jun 18</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 17: Handle Exceptions Like a Boss - Day 17 of 30 Days of Code Hi makeitsolutions...</span>
+        <span class="date">Jun 17</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">Upwork</span>
+        <span class="label">Inbox</span>
+        <span class="subject">Finalize your profile and get ready to win work - Move your freelance career forward...</span>
+        <span class="date">Jun 16</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 16: Be Exception-al - Day 16 of 30 Days of Code Hi makeitsolutions, Welcome to Day 16...</span>
+        <span class="date">Jun 16</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 15: Come together for Linked Lists - Day 15 of 30 Days of Code Hi makeitsolutions...</span>
+        <span class="date">Jun 15</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 14: Broaden your Scope - Day 14 of 30 Days of Code Hi makeitsolutions...</span>
+        <span class="date">Jun 14</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">LinkedIn</span>
+        <span class="label">Inbox</span>
+        <span class="subject">Marriott Hotels International Luxury Hotel Management - Paradox is hiring a AsstMgr-Se...</span>
+        <span class="date">Jun 13</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">Upwork</span>
+        <span class="label">Inbox</span>
+        <span class="subject">Welcome to Upwork - You've opened the door to a world of new work opportunities...</span>
+        <span class="date">Jun 13</span>
+      </div>
+
+      <div class="email-item">
+        <input type="checkbox" class="checkbox">
+        <span class="star">⭐</span>
+        <span class="sender">HackerRank Team</span>
+        <span class="subject">Day 13: Let’s Get Abstract - Day 13 of 30 Days of Code Hi makeitsolutions...</span>
+        <span class="date">Jun 13</span>
+      </div>
+    </div>
+
+    <footer>
+      <div>0% of 15 GB used</div>
+      <div>
+        <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Program Policies</a>
+      </div>
+      <div>Last account activity: 7 hours ago</div>
+    </footer>
   </div>
 
-  <!-- Clear search button -->
-  <button aria-label="Clear search" style="background: none; border: none; cursor: pointer; margin-left: 8px; display: none;">
-    <svg width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-      <path d="M18 6L6 18M6 6l12 12" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-  </button>
+  <script>
+    // Example placeholder for future interactivity
+    console.log('Inbox UI loaded.');
+  </script>
+</body>
+</html>
 
-  <!-- Settings icon -->
-  <button aria-label="Settings" style="background: none; border: none; cursor: pointer; margin-left: 16px; padding: 8px;">
-    <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 5.6V5a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  </button>
-
-  <!-- Help icon -->
-  <button aria-label="Help" style="background: none; border: none; cursor: pointer; margin-left: 8px; padding: 8px;">
-    <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 1 1 5.83 1c-.27.69-1.12 1.26-1.82 1.53-.54.21-.61.5-.61 1.14M12 17h.01" />
-    </svg>
-  </button>
-
-  <!-- Google apps icon -->
-  <button aria-label="Google apps" style="background: none; border: none; cursor: pointer; margin-left: 8px; padding: 8px;">
-    <svg width="24" height="24" fill="#5f6368" viewBox="0 0 24 24">
-      <circle cx="4" cy="4" r="2" />
-      <circle cx="12" cy="4" r="2" />
-      <circle cx="20" cy="4" r="2" />
-      <circle cx="4" cy="12" r="2" />
-      <circle cx="12" cy="12" r="2" />
-      <circle cx="20" cy="12" r="2" />
-      <circle cx="4" cy="20" r="2" />
-      <circle cx="12" cy="20" r="2" />
-      <circle cx="20" cy="20" r="2" />
-    </svg>
-  </button>
-
-  <!-- User avatar -->
-  <img src="https://i.pravatar.cc/40" alt="User Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-left: 12px; cursor: pointer;">
-  
-</header>
+@include('admin.footer')

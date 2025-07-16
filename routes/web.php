@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
 
 });
+Route::put('/profile/update', [ProfileController::class, 'update']);
 
 require __DIR__.'/auth.php';
 //Users Routes
@@ -175,9 +176,9 @@ Route::get('/chats', function () {
     return view('admin.chats'); // adjust view path if needed
 })->name('chats');
 
-Route::get('/all-mail', function () {
-    return view('admin.all_mail'); // adjust view path if needed
-})->name('all_mail');
+Route::get('/all_mails', function () {
+    return view('admin.all_mails'); // adjust view path if needed
+})->name('all_mails');
 
 Route::get('/trash', function () {
     return view('admin.trash'); // adjust view path if needed

@@ -9,7 +9,6 @@
     
     @include('admin.header')
     @include('admin.sidebar')
-    @include('admin.greet')
     @include('admin.main')
     @include('admin.footer')
 </body>

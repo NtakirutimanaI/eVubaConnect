@@ -1,67 +1,157 @@
-<!-- Gmail Style Header -->
-<header style="display: flex; align-items: center; padding: 8px 16px; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-family: Arial, sans-serif;">
+@include('admin.mail_header')
+@include('admin.sidebar')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Inbox</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f6f8fc;
+    }
 
-  <!-- Hamburger menu -->
-  <button aria-label="Menu" style="background: none; border: none; cursor: pointer; padding: 8px; margin-right: 16px;">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  </button>
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+      width: 81.5%;
+      margin-left: 222px;
+    }
 
-  <!-- Gmail logo -->
-  <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" alt="Gmail" style="height: 24px; margin-right: 24px;">
+    .toolbar select {
+      padding: 5px;
+    }
 
-  <!-- Search bar container -->
-  <div style="flex-grow: 1; max-width: 720px; position: relative;">
-    <input type="search" placeholder="Search mail" aria-label="Search mail" style="width: 100%; padding: 8px 40px 8px 16px; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; color: #202124; outline-offset: 2px;">
-    
-    <!-- Search icon -->
-    <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;" width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-      <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.03 6.01 12.52 3.5 9.5 3.5S4 6.01 4 9.5 6.52 15.5 9.5 15.5c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-    </svg>
+    .advanced-search {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    .email-table {
+      margin: 0 20px;
+      font-size: 14px;
+      width: 81.5%;
+      margin-left: 222px;
+    }
+
+    .email-header,
+    .email-row {
+      display: grid;
+      grid-template-columns: 30px 200px 1fr 70px;
+      padding: 10px;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fff;
+    }
+
+    .email-header {
+      font-weight: bold;
+      color: #555;
+      background: #f1f3f4;
+    }
+
+    .email-row.unread {
+      font-weight: bold;
+      background-color: #eaf1fb;
+    }
+
+    .email-row:hover {
+      background: #f5f5f5;
+    }
+
+    .badge {
+      background: #e8f0fe;
+      color: #1967d2;
+      padding: 2px 6px;
+      font-size: 11px;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+
+    .attachment {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <select>
+      <option>Any time</option>
+    </select>
+    <select>
+      <option>Has attachment</option>
+    </select>
+    <select>
+      <option>To</option>
+    </select>
+    <select>
+      <option>Is unread</option>
+    </select>
+    <a href="#" class="advanced-search">Advanced search</a>
   </div>
 
-  <!-- Clear search button -->
-  <button aria-label="Clear search" style="background: none; border: none; cursor: pointer; margin-left: 8px; display: none;">
-    <svg width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-      <path d="M18 6L6 18M6 6l12 12" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-  </button>
+  <div class="email-table">
+    <div class="email-header">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">To:</span>
+      <span class="email-subject">Subject</span>
+      <span class="email-date">Date</span>
+    </div>
 
-  <!-- Settings icon -->
-  <button aria-label="Settings" style="background: none; border: none; cursor: pointer; margin-left: 16px; padding: 8px;">
-    <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 5.6V5a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  </button>
+    <div class="email-row unread">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">nshimiyiman.</span>
+      <span class="email-subject"><span class="badge">Inbox</span> RE: Request - Thank You Dear...</span>
+      <span class="email-date">Jul 11</span>
+    </div>
 
-  <!-- Help icon -->
-  <button aria-label="Help" style="background: none; border: none; cursor: pointer; margin-left: 8px; padding: 8px;">
-    <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 1 1 5.83 1c-.27.69-1.12 1.26-1.82 1.53-.54.21-.61.5-.61 1.14M12 17h.01" />
-    </svg>
-  </button>
+    <div class="email-row">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">innocentnta.</span>
+      <span class="email-subject">RE: Improvement - Thank You Dear...</span>
+      <span class="email-date">Jul 11</span>
+    </div>
 
-  <!-- Google apps icon -->
-  <button aria-label="Google apps" style="background: none; border: none; cursor: pointer; margin-left: 8px; padding: 8px;">
-    <svg width="24" height="24" fill="#5f6368" viewBox="0 0 24 24">
-      <circle cx="4" cy="4" r="2" />
-      <circle cx="12" cy="4" r="2" />
-      <circle cx="20" cy="4" r="2" />
-      <circle cx="4" cy="12" r="2" />
-      <circle cx="12" cy="12" r="2" />
-      <circle cx="20" cy="12" r="2" />
-      <circle cx="4" cy="20" r="2" />
-      <circle cx="12" cy="20" r="2" />
-      <circle cx="20" cy="20" r="2" />
-    </svg>
-  </button>
+    <div class="email-row">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">fionaanne.u.</span>
+      <span class="email-subject">Request for Payment API Access – Integration with TECH GUARD System</span>
+      <span class="email-date">Jun 12</span>
+    </div>
 
-  <!-- User avatar -->
-  <img src="https://i.pravatar.cc/40" alt="User Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-left: 12px; cursor: pointer;">
-  
-</header>
+    <div class="email-row">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">Nkurunziza 2</span>
+      <span class="email-subject"><span class="badge">Inbox</span> Reapplication for Graphic Design Internship <span class="attachment">📎</span></span>
+      <span class="email-date">Jun 8</span>
+    </div>
+
+    <div class="email-row unread">
+      <span><input type="checkbox" /></span>
+      <span class="email-to">papy</span>
+      <span class="email-subject"><strong>Reset Password Notification</strong> – Laravel Logo Hello!...</span>
+      <span class="email-date">Jun 4</span>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+<script>
+  document.querySelectorAll('.email-row').forEach(row => {
+    row.addEventListener('click', () => {
+      alert('Opening email: ' + row.querySelector('.email-subject').innerText);
+    });
+  });
+</script>
+
+@include('admin.footer')

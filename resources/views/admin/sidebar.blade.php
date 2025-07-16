@@ -67,7 +67,7 @@
                 <li><a href="{{ route('sent') }}">Sent</a></li>
                 <li><a href="{{ route('drafts') }}">Drafts</a></li>
                 <li><a href="{{ route('chats') }}">Chats</a></li>
-                <li><a href="{{ route('all_mail') }}">All Mail</a></li>
+                <li><a href="{{ route('all_mails') }}">All Mail</a></li>
                 <li><a href="{{ route('trash') }}">Trash</a></li>
                 <li><a href="{{ route('meetings') }}">Meetings</a></li>
                 <li><a href="{{ route('whatsapp') }}">WhatsApp</a></li>

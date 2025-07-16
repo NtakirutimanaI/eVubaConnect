@@ -1,323 +1,238 @@
+@include('admin.mail_header')
+@include('admin.sidebar')
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gmail-Inspired Inbox</title>
-
+  <meta charset="UTF-8">
+  <title>Inbox - Gmail Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f3f4;
+      background: #f6f8fc;
       margin: 0;
       padding: 0;
-      
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      padding: 8px 16px;
-      background-color: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    header button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    header img.logo {
-      height: 24px;
-      margin-right: 24px;
-    }
-
-    .search-container {
-      flex-grow: 1;
-      max-width: 720px;
-      position: relative;
-    }
-
-    .search-container input {
-      width: 100%;
-      padding: 8px 40px 8px 16px;
-      border: 1px solid #dadce0;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #202124;
-      outline-offset: 2px;
-    }
-
-    .search-container svg.search-icon {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      margin-left: 12px;
-      cursor: pointer;
     }
 
     .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      width: 81.5%;
+      margin-left: 222px;
+      margin-top: 10px;
     }
 
-    .tabs {
+    .header {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #fff;
       border-bottom: 1px solid #ddd;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 0 20px;
     }
 
     .tab {
       padding: 14px 20px;
       cursor: pointer;
-      color: #555;
-      position: relative;
+      font-size: 14px;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
     }
 
     .tab.active {
-      color: #1a73e8;
       border-bottom: 3px solid #1a73e8;
+      color: #1a73e8;
       font-weight: bold;
     }
 
-    .badge {
-      background-color: #eee;
+    .tab span.badge {
+      background: #1a73e8;
+      color: #fff;
+      font-size: 11px;
       padding: 2px 6px;
       border-radius: 10px;
-      font-size: 12px;
-      margin-left: 6px;
+      margin-left: 5px;
     }
 
-    .green {
-      background-color: #34a853;
-      color: white;
+    .inbox {
+      margin-top: 10px;
     }
 
-    .blue {
-      background-color: #1a73e8;
-      color: white;
-    }
-
-    .get-started {
+    .email-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      padding: 20px;
-      border-bottom: 1px solid #ddd;
-      gap: 10px;
-    }
-
-    .card {
-      background: #f9fafb;
-      padding: 20px;
-      text-align: center;
-      border-radius: 10px;
-    }
-
-    .icon {
-      font-size: 30px;
-      margin-bottom: 10px;
-    }
-
-    .email-list {
-      padding: 10px 20px;
-    }
-
-    .email-item {
-      display: flex;
+      grid-template-columns: 30px 1fr 160px;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
-      transition: background 0.2s;
+      padding: 10px 15px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 14px;
     }
 
-    .email-item:hover {
+    .email-row:hover {
       background: #f1f3f4;
     }
 
-    .checkbox {
-      margin-right: 10px;
-    }
-
-    .star {
-      margin-right: 10px;
-      color: #ccc;
-      cursor: pointer;
-    }
-
-    .sender {
+    .email-from {
       font-weight: bold;
-      min-width: 180px;
     }
 
-    .subject {
-      flex-grow: 1;
-    }
-
-    .time {
+    .email-subject {
+      color: #202124;
+      overflow: hidden;
       white-space: nowrap;
-      color: #555;
+      text-overflow: ellipsis;
+    }
+
+    .email-date {
+      text-align: right;
+      color: #5f6368;
+      font-size: 13px;
+    }
+
+    .attachment {
+      margin-left: 5px;
+    }
+
+    .label {
+      background: #e8f0fe;
+      color: #1967d2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-right: 5px;
+    }
+
+    .icon {
+      margin-left: 5px;
+      font-size: 16px;
+      color: #5f6368;
     }
   </style>
 </head>
 <body>
-
-  <!-- Gmail Style Header -->
-  <header>
-    <!-- Hamburger menu -->
-    <button aria-label="Menu" style="margin-right: 16px;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="6" x2="21" y2="6" />
-        <line x1="3" y1="12" x2="21" y2="12" />
-        <line x1="3" y1="18" x2="21" y2="18" />
-      </svg>
-    </button>
-
-    <!-- Gmail logo -->
-    <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" alt="Gmail" class="logo">
-
-    <!-- Search bar -->
-    <div class="search-container">
-      <input type="search" placeholder="Search mail" aria-label="Search mail">
-      <svg class="search-icon" width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-        <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.03 6.01 12.52 3.5 9.5 3.5S4 6.01 4 9.5 6.52 15.5 9.5 15.5c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-      </svg>
-    </div>
-
-    <!-- Clear search (hidden) -->
-    <button aria-label="Clear search" style="margin-left: 8px; display: none;">
-      <svg width="20" height="20" fill="#5f6368" viewBox="0 0 24 24">
-        <path d="M18 6L6 18M6 6l12 12" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
-
-    <!-- Settings icon -->
-    <button aria-label="Settings" style="margin-left: 16px;">
-      <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 5.6V5a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      </svg>
-    </button>
-
-    <!-- Help icon -->
-    <button aria-label="Help" style="margin-left: 8px;">
-      <svg width="24" height="24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M9.09 9a3 3 0 1 1 5.83 1c-.27.69-1.12 1.26-1.82 1.53-.54.21-.61.5-.61 1.14M12 17h.01" />
-      </svg>
-    </button>
-
-    <!-- Google Apps -->
-    <button aria-label="Google apps" style="margin-left: 8px;">
-      <svg width="24" height="24" fill="#5f6368" viewBox="0 0 24 24">
-        <circle cx="4" cy="4" r="2" />
-        <circle cx="12" cy="4" r="2" />
-        <circle cx="20" cy="4" r="2" />
-        <circle cx="4" cy="12" r="2" />
-        <circle cx="12" cy="12" r="2" />
-        <circle cx="20" cy="12" r="2" />
-        <circle cx="4" cy="20" r="2" />
-        <circle cx="12" cy="20" r="2" />
-        <circle cx="20" cy="20" r="2" />
-      </svg>
-    </button>
-
-    <!-- Avatar -->
-    <img src="https://i.pravatar.cc/40" alt="User Avatar" class="avatar">
-  </header>
-
-  @include('admin.mail_sidebar')
-
   <div class="container">
-    <!-- Tabs -->
-    <div class="tabs">
+    <div class="header">
+      <span><input type="checkbox" /></span>
+      <span style="color: #5f6368;">1–45 of 45</span>
+    </div>
+
+    <div class="tab-bar">
       <div class="tab active">Primary</div>
-      <div class="tab">Promotions <span class="badge green">9 new</span></div>
-      <div class="tab">Social <span class="badge blue">50 new</span></div>
+      <div class="tab">Promotions <span class="badge">8 new</span></div>
+      <div class="tab">Social <span class="badge">8 new</span></div>
+      <div class="tab">Updates</div>
     </div>
 
-    <!-- Get Started -->
-    <div class="get-started">
-      <div class="card"><div class="icon">📥</div><p>Customize your inbox</p></div>
-      <div class="card"><div class="icon">🖼️</div><p>Change profile image</p></div>
-      <div class="card"><div class="icon">👥</div><p>Import contacts and mail</p></div>
-      <div class="card"><div class="icon">📱</div><p>Get Gmail for mobile</p></div>
-    </div>
+    <div class="inbox">
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">donotreply</div>
+          <div class="email-subject">Action needed: Your profile is no longer appearing in client searches – Log in to switch your profile ba...</div>
+        </div>
+        <div class="email-date">Jul 13</div>
+      </div>
 
-    <!-- Email List -->
-    <div class="email-list" id="email-list"></div>
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from"><strong>LinkedIn</strong></div>
+          <div class="email-subject"><strong>Pelephone posted</strong> - Innocent, here are your top trending posts</div>
+        </div>
+        <div class="email-date">Jul 11</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">me, Nshimiyimana <span class="icon">2</span></div>
+          <div class="email-subject">RE: Request - Thank you and see you soon! On Fri, 11 Jul 2025, 17:21 Please Check Your Email!...</div>
+        </div>
+        <div class="email-date">Jul 11</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">Birusha Ndegeya</div>
+          <div class="email-subject">Application for Software Development Skills Training – Dear Make IT Solutions Team, I hope this mess...</div>
+        </div>
+        <div class="email-date">Jun 3</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">Nkurunziza, me <span class="icon">2</span></div>
+          <div class="email-subject">Reapplication for Graphic Design Internship – NKURUNZIZA Vital 
+            <span class="label">PDF</span>
+            <span class="label">PDF</span>
+          </div>
+        </div>
+        <div class="email-date">Jun 3</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">me, Nkundabagen. <span class="icon">2</span></div>
+          <div class="email-subject">Greetings – hello Innocent Ntakirutimana. Gusa usibye ubu butumwa ntakindi nabonye On Sun, Jun 1...</div>
+        </div>
+        <div class="email-date">Jun 2</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">me, Mail <span class="icon">2</span></div>
+          <div class="email-subject">Verify Email Address – Address not found. Your message wasn't delivered to user@gmail.co...</div>
+        </div>
+        <div class="email-date">Jun 2</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">me</div>
+          <div class="email-subject">Reset Password Notification – Hello! You are receiving this email because we received a password res...</div>
+        </div>
+        <div class="email-date">Jun 2</div>
+      </div>
+
+      <div class="email-row">
+        <input type="checkbox" />
+        <div>
+          <div class="email-from">me</div>
+          <div class="email-subject">Reset Password Notification – Hello! You are receiving this email because we received a password res...</div>
+        </div>
+        <div class="email-date">Jun 2</div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const emails = [
-      {
-        sender: 'LinkedIn',
-        subject: 'Innocent, your application was sent to Kastech Software Solutions Group',
-        preview: 'Your application was...',
-        time: '10:21 AM'
-      },
-      {
-        sender: 'Jobright',
-        subject: 'Welcome to Jobright!',
-        preview: "Welcome to Jobright Eric Cheng, CEO 👋 I'm Eric Cheng...",
-        time: '10:10 AM'
-      },
-      {
-        sender: 'LinkedIn Job Alerts',
-        subject: '“Data Analyst”: Jobright.ai - Entry Level Data Analyst and more',
-        preview: 'Jobright.ai Entry Level Data A...',
-        time: '1:18 AM'
-      },
-      {
-        sender: 'LinkedIn Job Alerts',
-        subject: '“Software Engineer”: Jobright.ai - Junior Software Engineer – Entry Level (Remote)',
-        preview: 'Jobright.ai – Entry Level...',
-        time: 'Jul 12'
-      },
-      {
-        sender: 'LinkedIn Job Alerts',
-        subject: 'Explore jobs similar to your job alert',
-        preview: 'Software Tools Engineer and other roles...',
-        time: 'Jul 12'
-      },
-      {
-        sender: 'World of Electrical.',
-        subject: 'SCADA & PLC Essentials: Must-Learn Basics for Industrial Automation',
-        preview: '🔧 SCADA & PLC Basics...',
-        time: 'Jul 12'
-      },
-      {
-        sender: 'LinkedIn Job Alerts',
-        subject: '“Software Engineer”: Jobright.ai - Junior Software Engineer – Entry Level (Remote)',
-        preview: 'Jobright.ai – Entry Level...',
-        time: 'Jul 12'
-      }
-    ];
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        alert('Filtering: ' + tab.textContent.trim());
+      });
+    });
 
-    const emailList = document.getElementById('email-list');
-    emails.forEach(email => {
-      const item = document.createElement('div');
-      item.className = 'email-item';
-      item.innerHTML = `
-        <input type="checkbox" class="checkbox" />
-        <span class="star">☆</span>
-        <div class="sender">${email.sender}</div>
-        <div class="subject"><strong>${email.subject}</strong> - ${email.preview}</div>
-        <div class="time">${email.time}</div>
-      `;
-      emailList.appendChild(item);
+    document.querySelectorAll('.email-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const subject = row.querySelector('.email-subject').textContent.trim();
+        alert('Opening: ' + subject);
+      });
     });
   </script>
 </body>
 </html>
+
+@include('admin.footer')
