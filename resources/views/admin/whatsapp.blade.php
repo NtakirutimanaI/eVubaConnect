@@ -1,4 +1,3 @@
-@include('admin.mail_header')
 @include('admin.sidebar')
 
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #f6f1eb;
-      margin: 0;
+      margin-left:15%;
       padding: 20px;
       color: #333;
     }
@@ -60,7 +59,7 @@
     .steps .logo img {
       height: 30px;
       vertical-align: middle;
-      width:33px;
+      width: 33px;
     }
 
     .steps a {
@@ -115,6 +114,31 @@
       border-radius: 12px;
       position: relative;
     }
+
+    .whatsapp-link {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .whatsapp-link a {
+      display: inline-flex;
+      align-items: center;
+      background-color: #25D366;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .whatsapp-link a:hover {
+      background-color: #1ebe57;
+    }
+
+    .whatsapp-link img {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -139,11 +163,12 @@
       </div>
       
       <div class="qr-area">
-        <div class="qr-code">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/QR_Code_Example.svg" alt="QR Code">
-          <div class="overlay-icon">🟢</div>
-        </div>
-        <div class="mock-phone"></div>
+        <div class="whatsapp-link">
+      <a href="https://wa.me/250787832490" target="_blank">
+        <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" width="24" height="24" alt="WhatsApp Icon">
+        Chat on WhatsApp
+      </a>
+    </div>
       </div>
     </div>
   </div>

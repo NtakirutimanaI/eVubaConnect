@@ -11,19 +11,27 @@ use Illuminate\Validation\Rules\Password;
 class PasswordController extends Controller
 {
     /**
+     * Show the form for changing the password.
+     */
+    public function showChangeForm()
+    {
+        return view('auth.change-password'); // make sure this view exists
+    }
+
+    /**
      * Update the user's password.
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validateWithBag('updatePassword', [
+        $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
         $request->user()->update([
-            'password' => Hash::make($validated['password']),
+            'password' => Hash::make($request->password),
         ]);
 
-        return back()->with('status', 'password-updated');
+        return back()->with('status', 'Password changed successfully!');
     }
 }

@@ -16,10 +16,16 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ClientProductController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\PasswordController;
+
 
 
 Route::get('/', function () {
-    return view('admin.index');
+    return view('web.index');
 });
 
 // Route::get('/dashboard', function () {
@@ -49,11 +55,6 @@ Route::get('hr/dashboard', [HomeController::class, 'hr'])->name('hr.dashboard')-
 Route::get('analyst/dashboard', [HomeController::class, 'analyst'])->name('analyst.dashboard')->middleware(['auth', 'analyst']);
 Route::get('technician/dashboard', [HomeController::class, 'technician'])->name('technician.dashboard')->middleware(['auth', 'technician']);
 Route::get('ai/dashboard', [HomeController::class, 'ai'])->name('ai.dashboard')->middleware(['auth', 'ai']);
-
-Route::get('/', function () {
-    return view('admin.index');
-})->name('dashboard');
-
 
 // Scheduling Routes
 Route::get('/admin/scheduling', [SchedulingController::class, 'index'])->name('scheduling');
@@ -212,4 +213,66 @@ Route::post('/admin/client-product/store', [ClientProductController::class, 'sto
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings');
     Route::post('/settings/update', [SettingsController::class, 'update'])->name('admin.settings.update');
+});
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/workforce', [WorkforceController::class, 'index'])->name('workforce');
+});
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/workforce', [WorkforceController::class, 'index'])->name('workforce');
+});
+
+
+//
+Route::post('/appointments/notify-client', [App\Http\Controllers\AppointmentController::class, 'notifyClient'])->name('appointments.notify.client');
+Route::post('/appointments/notify-employee', [App\Http\Controllers\AppointmentController::class, 'notifyEmployee'])->name('appointments.notify.employee');
+
+
+//Mails
+Route::post('/admin/emails/send', [EmailController::class, 'sendEmail'])->name('emails.send');
+Route::post('/emails/send', [EmailController::class, 'send'])->name('emails.send')->middleware('auth');
+
+
+//
+Route::get('/reports/export/{type}', [ReportController::class, 'export'])->name('reports.export');
+
+
+//Register
+Route::get('/auth/register', [RegisteredUserController::class, 'create'])->name('auth.register');
+Route::post('/auth/register', [RegisteredUserController::class, 'store']);
+// Login routes (needed to avoid auth.login missing route error)
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+
+//Dashboard
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+//Logout
+Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
+// In routes/web.php
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+
+//Appointment
+Route::get('/web/appointment', [AppointmentController::class, 'create'])->name('web.appointment');
+Route::get('/appointment', [AppointmentController::class, 'index'])->name('appointment.form');
+Route::post('/appointment', [AppointmentController::class, 'store'])->name('appointment.store');
+Route::get('/appointment/create', [AppointmentController::class, 'create'])->name('appointment.create');
+
+
+//Google
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+
+//Pass
+// Example GET route for showing the password change form
+Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change');
+
+// Example POST route for processing the password change
+Route::post('/password/change', [PasswordController::class, 'update'])->name('password.change.update');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change');
+    Route::post('/password/change', [PasswordController::class, 'update'])->name('password.update');
 });

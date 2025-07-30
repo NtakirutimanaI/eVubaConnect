@@ -1,5 +1,6 @@
 @include('admin.header') 
-@include('admin.sidebar')<!DOCTYPE html>
+@include('admin.sidebar')
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -85,6 +86,75 @@
       font-weight: bold;
     }
 
+    /* --- RESPONSIVE ADDITIONS --- */
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        width: calc(100% - 222px);
+        margin-left: 222px;
+        padding: 15px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        width: 100%;
+        margin-left: 0;
+        padding: 15px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .big-number {
+        font-size: 28px;
+      }
+
+      canvas {
+        height: 180px !important;
+      }
+
+      .bar-names div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .bar-names div span {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      .big-number {
+        font-size: 24px;
+      }
+
+      canvas {
+        height: 150px !important;
+      }
+
+      .bar {
+        height: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -239,6 +309,5 @@
 
 </body>
 </html>
-
 
 @include('admin.footer')

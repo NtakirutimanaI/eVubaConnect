@@ -1,135 +1,206 @@
 @include('admin.header')
 @include('admin.sidebar')
 
-<title>eVubaConnect Reports</title>
+<title>eVubaConnect | Detailed Invoice Report</title>
 
 <style>
-    .report-wrapper {
-        margin-left: 17.5%;
-        padding: 40px 30px;
-        background-color: #f9fbfc;
-        min-height: 100vh;
-        color: #2d3748;
+    /* A4 size page style */
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+    body, html {
+        margin:0;
+        padding: 0;
         font-family: 'Segoe UI', sans-serif;
+        background: #f0f0f0;
     }
 
-    .report-title {
-        font-size: 20px;
+    .invoice-container {
+        margin-left: 25%;
+        margin-top:50px;
+        padding: 30px;
+        background: #fff;
+        font-size: 13px;
+        color: #2c3e50;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        max-width: 210mm; /* A4 width */
+        min-height: 297mm; /* A4 height */
+        box-sizing: border-box;
+        page-break-after: always;
+    }
+
+    .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .invoice-header h2 {
         font-weight: bold;
+        font-size: 22px;
+    }
+
+    .address-block {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .address-box {
+        width: 48%;
+        background: #f9fbfc;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+
+    .address-box h6 {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    table.invoice-table {
+        width: 100%;
+        border-collapse: collapse;
         margin-bottom: 20px;
     }
 
-    .action-links {
-        margin-bottom: 25px;
+    table.invoice-table th,
+    table.invoice-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
     }
 
-    .action-button {
-        background-color: #1f8b4c;
+    table.invoice-table th {
+        background-color: #2d3748;
+        color: #fff;
+        font-size: 12px;
+    }
+
+    table.invoice-table td {
+        background-color: #fefefe;
+    }
+
+    .totals {
+        width: 100%;
+        max-width: 300px;
+        float: right;
+    }
+
+    .totals table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .totals td {
+        padding: 8px;
+        text-align: right;
+    }
+
+    .totals .label {
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .note {
+        font-size: 12px;
+        color: #555;
+        margin-top: 100px;
+        border-top: 1px solid #ccc;
+        padding-top: 15px;
+        clear: both;
+    }
+
+    /* Download buttons container */
+    .download-buttons {
+        margin: 20px 17% 10px;
+    }
+
+    .download-buttons a {
+        background-color: #2d3748;
         color: white;
-        padding: 8px 16px;
-        border-radius: 5px;
-        margin-right: 12px;
+        padding: 10px 18px;
+        border-radius: 4px;
         text-decoration: none;
-        font-size: 13px;
+        margin-right: 10px;
+        font-size: 14px;
         transition: background-color 0.3s ease;
     }
 
-    .action-button.pdf {
-        background-color: #c0392b;
-    }
-
-    .action-button:hover {
-        opacity: 0.9;
-    }
-
-    .report-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .report-box {
-        flex: 1 1 45%;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        padding: 20px;
-        min-height: 130px;
-    }
-
-    .report-box h6 {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        color: #2c3e50;
-    }
-
-    .report-box ul {
-        padding-left: 20px;
-        list-style-type: disc;
-        max-height: 150px;
-        overflow-y: auto;
-    }
-
-    .report-box ul li {
-        margin-bottom: 6px;
-        font-size: 13px;
-    }
-
-    .report-box p {
-        font-size: 14px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    @media (max-width: 768px) {
-        .report-wrapper {
-            margin-left: 0;
-            padding: 20px;
-        }
-
-        .report-box {
-            flex: 1 1 100%;
-        }
+    .download-buttons a:hover {
+        background-color: #1a202c;
     }
 </style>
 
-<div class="report-wrapper">
-    <h4 class="report-title">📊 System Reports</h4>
+<div class="download-buttons">
+    <a href="{{ route('reports.export', ['type' => 'pdf']) }}" target="_blank" rel="noopener noreferrer">Download PDF</a>
+    <a href="{{ route('reports.export', ['type' => 'excel']) }}">Download Excel</a>
+</div>
 
-    <div class="action-links">
-        <a href="{{ route('admin.reports.export', 'excel') }}" class="action-button">Export Excel</a>
-        <a href="{{ route('admin.reports.export', 'pdf') }}" class="action-button pdf">Export PDF</a>
+<div class="invoice-container" id="invoice">
+    <div class="invoice-header">
+        <h2>Invoice #{{ $report->invoice_no ?? 'INV-00001' }}</h2>
+        <img src="{{ asset('images/logo.png') }}" alt="eVubaConnect" height="40">
     </div>
 
-    <div class="report-grid">
-        <div class="report-box">
-            <h6>👨‍💼 Employee Performance</h6>
-            <ul>
-                @foreach($employees as $emp)
-                    <li>{{ $emp->name }} – Tasks Done: {{ $emp->tasks_done ?? 0 }}</li>
-                @endforeach
-            </ul>
+    <div class="address-block">
+        <div class="address-box">
+            <h6>Billing Address</h6>
+            <p>{{ $report->billing_name }}<br>{{ $report->billing_address }}</p>
         </div>
+        <div class="address-box">
+            <h6>Shipping Address</h6>
+            <p>{{ $report->shipping_name }}<br>{{ $report->shipping_address }}</p>
+        </div>
+    </div>
 
-        <div class="report-box">
-            <h6>📦 Inventory Summary</h6>
-            <ul>
-                @foreach($products as $product)
-                    <li>{{ $product->name }} – Qty: {{ $product->quantity }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Discount</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($report->items as $item)
+            <tr>
+                <td>{{ $item->description }}</td>
+                <td>${{ number_format($item->unit_price, 2) }}</td>
+                <td>{{ $item->quantity }}</td>
+                <td>${{ number_format($item->discount, 2) }}</td>
+                <td>${{ number_format($item->total, 2) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        <div class="report-box">
-            <h6>📅 Appointments</h6>
-            <p>Total Visits: {{ $appointments->count() }}</p>
-        </div>
+    <div class="totals">
+        <table>
+            <tr>
+                <td class="label">Subtotal:</td>
+                <td>${{ number_format($report->subtotal, 2) }}</td>
+            </tr>
+            <tr>
+                <td class="label">Shipping:</td>
+                <td>${{ number_format($report->shipping, 2) }}</td>
+            </tr>
+            <tr>
+                <td class="label">Total Due:</td>
+                <td><strong>${{ number_format($report->total, 2) }}</strong></td>
+            </tr>
+        </table>
+    </div>
 
-        <div class="report-box">
-            <h6>💬 Customer Tickets</h6>
-            <p>Total Tickets: {{ $tickets->count() }}</p>
-        </div>
+    <div class="note">
+        <p>Digitally generated by eVubaConnect on {{ now()->format('Y-m-d H:i') }}.<br>
+        This invoice is valid for business use and is automatically generated by the system.</p>
     </div>
 </div>
 

@@ -584,6 +584,56 @@ h2, h3 {
     </div>
 </div>
 
+{{-- ✅ View Appointment Modal --}}
+<div id="viewAppointmentModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" data-modal="viewAppointmentModal">&times;</span>
+        <div class="modal-header">📄 Appointment Details</div>
+        <div class="modal-body">
+            <p><strong>Client:</strong> <span id="view-client"></span></p>
+            <p><strong>Employee:</strong> <span id="view-employee"></span></p>
+            <p><strong>Service:</strong> <span id="view-service"></span></p>
+            <p><strong>Date:</strong> <span id="view-date"></span></p>
+            <p><strong>Time:</strong> <span id="view-time"></span></p>
+            <p><strong>Status:</strong> <span id="view-status"></span></p>
+        </div>
+    </div>
+</div>
+
+{{-- Notify Client Modal --}}
+<div id="notifyClientModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" data-modal="notifyClientModal">&times;</span>
+        <div class="modal-header">📩 Notify Client</div>
+        <div class="modal-body">
+            <form method="POST" action="{{ route('appointments.notify.client') }}">
+                @csrf
+                <input type="hidden" name="appointment_id" id="notify-client-id">
+                <label class="form-label">Message</label>
+                <textarea name="message" class="form-control" required></textarea>
+                <button type="submit" class="btn btn-primary btn-block">Send Notification</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Notify Employee Modal --}}
+<div id="notifyEmployeeModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" data-modal="notifyEmployeeModal">&times;</span>
+        <div class="modal-header">📩 Notify Employee</div>
+        <div class="modal-body">
+            <form method="POST" action="{{ route('appointments.notify.employee') }}">
+                @csrf
+                <input type="hidden" name="appointment_id" id="notify-employee-id">
+                <label class="form-label">Message</label>
+                <textarea name="message" class="form-control" required></textarea>
+                <button type="submit" class="btn btn-primary btn-block">Send Notification</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @include('admin.footer')
 
 @section('scripts')
@@ -637,4 +687,96 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+
+
+// View Appointment Modal
+    function openViewModal(appointment) {
+        document.getElementById('view-client').textContent = appointment.client?.full_name || appointment.client?.name;
+        document.getElementById('view-employee').textContent = appointment.employee?.name;
+        document.getElementById('view-service').textContent = appointment.service?.name;
+        document.getElementById('view-date').textContent = appointment.scheduled_date;
+        document.getElementById('view-time').textContent = appointment.start_time + ' - ' + appointment.end_time;
+        document.getElementById('view-status').textContent = appointment.status;
+        document.getElementById('viewAppointmentModal').style.display = 'block';
+    }
+
+    // Notify Client
+    function openNotifyClientModal(appointment) {
+        document.getElementById('notify-client-id').value = appointment.id;
+        document.getElementById('notifyClientModal').style.display = 'block';
+    }
+
+    // Notify Employee
+    function openNotifyEmployeeModal(appointment) {
+        document.getElementById('notify-employee-id').value = appointment.id;
+        document.getElementById('notifyEmployeeModal').style.display = 'block';
+    }
+
+    // Close buttons
+    document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const modalId = this.getAttribute('data-modal');
+            document.getElementById(modalId).style.display = 'none';
+        });
+    });
+
+    // Close modals on outside click
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+    }
+
+    //Automatic
+    document.addEventListener('DOMContentLoaded', function() {
+    const startTimeInput = document.getElementById('start_time');
+    const serviceSelect = document.getElementById('service_id');
+    const endTimeInput = document.getElementById('end_time');
+
+    let autoUpdate = true; // flag if system should auto-update end time
+
+    function calculateEndTime() {
+        if (!autoUpdate) return; // if user manually changed, don't auto update
+
+        const startTime = startTimeInput.value;
+        const selectedOption = serviceSelect.selectedOptions[0];
+        const duration = parseInt(selectedOption?.getAttribute('data-duration')) || 0;
+
+        if (startTime && duration) {
+            const [hours, minutes] = startTime.split(':').map(Number);
+            const startDate = new Date(0, 0, 0, hours, minutes);
+            startDate.setMinutes(startDate.getMinutes() + duration);
+
+            endTimeInput.value =
+                String(startDate.getHours()).padStart(2, '0') + ':' +
+                String(startDate.getMinutes()).padStart(2, '0');
+        } else {
+            endTimeInput.value = '';
+        }
+    }
+
+    // When user changes start time or service, recalc end time only if autoUpdate enabled
+    startTimeInput.addEventListener('change', calculateEndTime);
+    serviceSelect.addEventListener('change', calculateEndTime);
+
+    // If user manually edits end time, disable autoUpdate to allow manual override
+    endTimeInput.addEventListener('input', () => {
+        autoUpdate = false;
+    });
+
+    // Optional: add a reset button to re-enable auto-update if user wants system to recalc
+    // For example, a small button near end time input:
+    /*
+    const resetBtn = document.createElement('button');
+    resetBtn.textContent = 'Auto-calc';
+    resetBtn.type = 'button';
+    resetBtn.onclick = () => {
+        autoUpdate = true;
+        calculateEndTime();
+    };
+    endTimeInput.parentNode.appendChild(resetBtn);
+    */
+
+});
+
 </script>

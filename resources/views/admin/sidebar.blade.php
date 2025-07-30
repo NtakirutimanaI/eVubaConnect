@@ -1,3 +1,4 @@
+<!-- CSS Links -->
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -9,7 +10,7 @@
 </div>
 
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
+<div class="sidebar" id="sidebar" style="margin-top: 0px;">
     <ul class="sidebar-menu">
 
         <!-- Dashboard -->
@@ -52,15 +53,13 @@
             </a>
         </li>
 
-        <!-- Mailing with Submenu -->
+        <!-- Mailing -->
         <li class="mail-hover-container" style="position: relative;">
             <a href="#" class="mail-trigger" title="Mailing" style="display: flex; align-items: center; padding: 8px 12px; text-decoration: none; color: inherit;">
                 <img src="https://img.icons8.com/ios-filled/24/000000/new-post.png" class="icon" alt="Mailing Icon" style="margin-right: 8px;" />
                 <span class="label">Mailing</span>
                 <i class="fas fa-chevron-right" style="margin-left: auto;"></i>
             </a>
-
-            <!-- Submenu fixed to top -->
             <ul class="mail-submenu">
                 <li><a href="{{ route('compose') }}">Compose</a></li>
                 <li><a href="{{ route('inbox') }}">Inbox</a></li>
@@ -90,14 +89,21 @@
             </a>
         </li>
 
+        <!-- Logout -->
+        <li>
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                @csrf
+                <button type="submit" title="Logout" style="background: none; border: none; width: 100%; text-align: left; display: flex; align-items: center; padding: 8px 12px; cursor: pointer; color: inherit;">
+                    <img src="https://img.icons8.com/ios-filled/24/000000/logout-rounded-left.png" class="icon" alt="Logout Icon" style="margin-right: 8px;" />
+                    <span class="label">Logout</span>
+                </button>
+            </form>
+        </li>
+
     </ul>
 </div>
 
-@section('scripts')
-    <script src="{{ asset('js/script.js') }}"></script>
-@endsection
-
-<!-- Styling for Mailing Submenu -->
+<!-- Submenu Styling -->
 <style>
     .mail-submenu {
         display: none;
@@ -111,7 +117,7 @@
         margin: 0;
         min-width: 80px;
         z-index: 9999;
-        height:600px;
+        height: 600px;
     }
 
     .mail-submenu li a {
@@ -123,9 +129,56 @@
 
     .mail-submenu li a:hover {
         background-color: #007bff;
+        color: #fff;
     }
 
     .mail-hover-container:hover .mail-submenu {
         display: block;
     }
+
+    /* Responsive Sidebar */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            position: fixed;
+            z-index: 999;
+            background-color: white;
+            left: -100%;
+            top: 0;
+            height: 100vh;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .hamburger {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .hamburger span {
+            height: 3px;
+            width: 25px;
+            background-color: black;
+            margin: 4px 0;
+        }
+    }
 </style>
+
+<!-- Sidebar Script -->
+@section('scripts')
+<script src="{{ asset('js/script.js') }}"></script>
+<script>
+    // Responsive sidebar toggle
+    document.getElementById("hamburger").addEventListener("click", function () {
+        document.getElementById("sidebar").classList.toggle("active");
+    });
+</script>
+@endsection

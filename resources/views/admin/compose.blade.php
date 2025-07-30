@@ -1,3 +1,5 @@
+@include('admin.mail_sidebar')
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,6 +67,7 @@
       padding: 30px 16px 80px; /* extra bottom padding for drag space */
       min-height: calc(100vh - 56px);
       box-sizing: border-box;
+      position: relative;
     }
 
     /* Email container */
@@ -81,7 +84,9 @@
       cursor: move;
       box-sizing: border-box;
       user-select: none;
-      margin-left:20%;
+      margin-left: 20%;
+      max-height: 80vh;
+      overflow: auto;
     }
 
     .header {
@@ -175,6 +180,22 @@
       background-color: #e8f0fe;
     }
 
+    /* Attachment list */
+    #attachmentList {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #555;
+      user-select: text;
+    }
+    #attachmentList span {
+      display: inline-block;
+      margin-right: 10px;
+      background: #f1f3f4;
+      padding: 3px 6px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+
     .trash-icon {
       position: absolute;
       bottom: 20px;
@@ -196,7 +217,7 @@
       }
       .email-container {
         position: fixed !important;
-        left: 30% !important;
+        left: 50% !important;
         top: 70px !important;
         transform: translateX(-50%);
         width: 95% !important;
@@ -206,7 +227,6 @@
         cursor: default !important; /* Disable drag cursor */
         user-select: text;
         box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-        
       }
       .trash-icon {
         position: fixed !important;
@@ -227,7 +247,9 @@
   </style>
 </head>
 <body>
-  @include('admin.mail_sidebar')
+
+  <!-- Your sidebar included via blade -->
+  {{-- @include('admin.mail_sidebar') --}}
 
   <!-- Gmail Style Header -->
   <header>
@@ -283,39 +305,45 @@
     <div class="email-container" role="dialog" aria-labelledby="newMessageLabel" aria-modal="true">
       <div class="header" id="newMessageLabel">New Message</div>
       <div class="field">
-        <input type="text" placeholder="To" aria-label="Recipient email address" />
+        <input type="email" id="toInput" placeholder="To" aria-label="Recipient email address" />
       </div>
       <div class="field">
-        <input type="text" placeholder="Subject" aria-label="Email subject" />
+        <input type="text" id="subjectInput" placeholder="Subject" aria-label="Email subject" />
       </div>
-      <div class="editor" contenteditable="true" aria-label="Email body"></div>
+      <div class="editor" id="emailBody" contenteditable="true" aria-label="Email body"></div>
+
       <div class="toolbar" aria-label="Text formatting toolbar">
-        <select aria-label="Font family">
-          <option value="sans-serif">Sans Serif</option>
+        <select id="fontSelect" aria-label="Font family">
+          <option value="sans-serif" selected>Sans Serif</option>
           <option value="serif">Serif</option>
           <option value="monospace">Monospace</option>
         </select>
-        <button type="button" aria-label="Bold"><b>B</b></button>
-        <button type="button" aria-label="Italic"><i>I</i></button>
-        <button type="button" aria-label="Underline"><u>U</u></button>
-        <button type="button" aria-label="Highlight">A</button>
-        <button type="button" aria-label="Bullet list">•</button>
-        <button type="button" aria-label="Numbered list">1.</button>
-        <button type="button" aria-label="Outdent">⇤</button>
-        <button type="button" aria-label="Indent">⇥</button>
-        <button type="button" aria-label="Quote">“”</button>
-        <button type="button" aria-label="Undo">↺</button>
-        <button type="button" aria-label="Clear formatting">⨉</button>
+        <button type="button" aria-label="Bold" data-command="bold"><b>B</b></button>
+        <button type="button" aria-label="Italic" data-command="italic"><i>I</i></button>
+        <button type="button" aria-label="Underline" data-command="underline"><u>U</u></button>
+        <button type="button" aria-label="Highlight" data-command="hiliteColor" data-value="yellow">A</button>
+        <button type="button" aria-label="Bullet list" data-command="insertUnorderedList">•</button>
+        <button type="button" aria-label="Numbered list" data-command="insertOrderedList">1.</button>
+        <button type="button" aria-label="Outdent" data-command="outdent">⇤</button>
+        <button type="button" aria-label="Indent" data-command="indent">⇥</button>
+        <button type="button" aria-label="Quote" data-command="formatBlock" data-value="blockquote">“”</button>
+        <button type="button" aria-label="Undo" data-command="undo">↺</button>
+        <button type="button" aria-label="Clear formatting" id="clearFormat">⨉</button>
       </div>
+
+      <!-- Attachment Input Hidden -->
+      <input type="file" id="attachmentInput" multiple style="display:none" />
+      <div id="attachmentList" aria-live="polite" aria-atomic="true"></div>
+
       <div class="send-bar">
-        <button type="button" aria-label="Send email">Send</button>
-        <button type="button" class="icon-btn" aria-label="Change text color">A</button>
-        <button type="button" class="icon-btn" aria-label="Attach file">📎</button>
-        <button type="button" class="icon-btn" aria-label="Insert emoji">😊</button>
-        <button type="button" class="icon-btn" aria-label="Insert image">🖼️</button>
-        <button type="button" class="icon-btn" aria-label="Encrypt email">🔒</button>
-        <button type="button" class="icon-btn" aria-label="Edit draft">✏️</button>
-        <button type="button" class="icon-btn" aria-label="More options">⋯</button>
+        <button type="button" id="sendBtn" aria-label="Send email">Send</button>
+        <button type="button" class="icon-btn" id="textColorBtn" aria-label="Change text color">A</button>
+        <button type="button" class="icon-btn" id="attachBtn" aria-label="Attach file" title="Attach file">📎</button>
+        <button type="button" class="icon-btn" id="emojiBtn" aria-label="Insert emoji" title="Insert emoji">😊</button>
+        <button type="button" class="icon-btn" id="insertImageBtn" aria-label="Insert image" title="Insert image">🖼️</button>
+        <button type="button" class="icon-btn" id="encryptBtn" aria-label="Encrypt email" title="Encrypt email">🔒</button>
+        <button type="button" class="icon-btn" id="editDraftBtn" aria-label="Edit draft" title="Edit draft">✏️</button>
+        <button type="button" class="icon-btn" id="moreOptionsBtn" aria-label="More options" title="More options">⋯</button>
       </div>
       <div class="trash-icon" role="button" tabindex="0" aria-label="Delete draft">🗑️</div>
     </div>
@@ -333,12 +361,9 @@
     }
 
     email.addEventListener('mousedown', (e) => {
-      // Only start drag if cursor is on email container but not on inputs/buttons
       const target = e.target;
       const interactiveTags = ['INPUT', 'BUTTON', 'SELECT', 'TEXTAREA'];
       if (interactiveTags.includes(target.tagName) || target.isContentEditable) return;
-
-      // For small screens drag disabled
       if (window.innerWidth <= 768) return;
 
       isDragging = true;
@@ -346,7 +371,6 @@
       offsetX = e.clientX - rect.left;
       offsetY = e.clientY - rect.top;
 
-      // Prevent text selection
       e.preventDefault();
     });
 
@@ -356,7 +380,6 @@
       let newLeft = e.clientX - offsetX;
       let newTop = e.clientY - offsetY;
 
-      // Clamp within viewport (some padding)
       const padding = 20;
       const containerWidth = email.offsetWidth;
       const containerHeight = email.offsetHeight;
@@ -371,6 +394,239 @@
     document.addEventListener('mouseup', () => {
       isDragging = false;
     });
+  </script>
+
+  <!-- Email Formatting and Send Logic -->
+  <script>
+    const editor = document.getElementById('emailBody');
+    const fontSelect = document.getElementById('fontSelect');
+    const toolbarButtons = document.querySelectorAll('.toolbar button[data-command]');
+    const clearFormatBtn = document.getElementById('clearFormat');
+    const sendBtn = document.getElementById('sendBtn');
+    const toInput = document.getElementById('toInput');
+    const subjectInput = document.getElementById('subjectInput');
+    const textColorBtn = document.getElementById('textColorBtn');
+    const trashIcon = document.querySelector('.trash-icon');
+
+    const attachBtn = document.getElementById('attachBtn');
+    const attachmentInput = document.getElementById('attachmentInput');
+    const attachmentList = document.getElementById('attachmentList');
+
+    const emojiBtn = document.getElementById('emojiBtn');
+    const insertImageBtn = document.getElementById('insertImageBtn');
+    const encryptBtn = document.getElementById('encryptBtn');
+    const editDraftBtn = document.getElementById('editDraftBtn');
+    const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+
+    // Store selected files for upload
+    let selectedFiles = [];
+
+    // Set font family when changed
+    fontSelect.addEventListener('change', () => {
+      document.execCommand('fontName', false, fontSelect.value);
+      editor.focus();
+    });
+
+    // Toolbar buttons formatting actions
+    toolbarButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const command = button.getAttribute('data-command');
+        if (command === 'hiliteColor') {
+          document.execCommand(command, false, button.getAttribute('data-value'));
+        } else if (command === 'formatBlock') {
+          document.execCommand(command, false, button.getAttribute('data-value'));
+        } else {
+          document.execCommand(command, false, null);
+        }
+        editor.focus();
+      });
+    });
+
+    // Clear formatting
+    clearFormatBtn.addEventListener('click', () => {
+      document.execCommand('removeFormat', false, null);
+      // Also clear block formats by resetting innerHTML to plain text temporarily
+      const text = editor.innerText;
+      editor.innerHTML = '';
+      editor.innerText = text;
+      editor.focus();
+    });
+
+    // Text color picker toggle
+    textColorBtn.addEventListener('click', () => {
+      const color = prompt('Enter text color (name or hex):', '#000000');
+      if (color) {
+        document.execCommand('foreColor', false, color);
+      }
+      editor.focus();
+    });
+
+    // Trash icon clears all fields
+    trashIcon.addEventListener('click', clearDraft);
+    trashIcon.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') clearDraft();
+    });
+
+    function clearDraft() {
+      toInput.value = '';
+      subjectInput.value = '';
+      editor.innerHTML = '';
+      selectedFiles = [];
+      renderAttachments();
+    }
+
+    // Attach file button opens file selector
+    attachBtn.addEventListener('click', () => {
+      attachmentInput.click();
+    });
+
+    // On file selection
+    attachmentInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      selectedFiles = selectedFiles.concat(files);
+      renderAttachments();
+      // Clear input to allow re-upload of same files if needed
+      attachmentInput.value = '';
+    });
+
+    // Render attachment filenames with remove option
+    function renderAttachments() {
+      attachmentList.innerHTML = '';
+      if(selectedFiles.length === 0) return;
+      selectedFiles.forEach((file, index) => {
+        const span = document.createElement('span');
+        span.textContent = file.name;
+        span.title = 'Click to remove';
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', () => {
+          selectedFiles.splice(index, 1);
+          renderAttachments();
+        });
+        attachmentList.appendChild(span);
+      });
+    }
+
+    // Emoji insertion (simple prompt to insert emoji unicode)
+    emojiBtn.addEventListener('click', () => {
+      const emoji = prompt('Enter emoji or symbol to insert:', '😊');
+      if (emoji) {
+        insertAtCaret(editor, emoji);
+        editor.focus();
+      }
+    });
+
+    // Insert Image (simple prompt to insert image URL)
+    insertImageBtn.addEventListener('click', () => {
+      const url = prompt('Enter image URL to insert:');
+      if (url) {
+        document.execCommand('insertImage', false, url);
+        editor.focus();
+      }
+    });
+
+    // Encrypt email placeholder (alerts for now)
+    encryptBtn.addEventListener('click', () => {
+      alert('Encrypt email feature coming soon.');
+    });
+
+    // Edit draft placeholder
+    editDraftBtn.addEventListener('click', () => {
+      alert('Edit draft feature coming soon.');
+    });
+
+    // More options placeholder
+    moreOptionsBtn.addEventListener('click', () => {
+      alert('More options feature coming soon.');
+    });
+
+    // Insert text at caret position in contenteditable
+    function insertAtCaret(editableDiv, text) {
+      let sel, range;
+      if(window.getSelection) {
+        sel = window.getSelection();
+        if(sel.getRangeAt && sel.rangeCount) {
+          range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(text));
+          // Move caret after inserted text
+          range.setStartAfter(range.endContainer);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }
+
+    // Send button logic - submits to backend via AJAX and saves email to DB
+    sendBtn.addEventListener('click', () => {
+      const to = toInput.value.trim();
+      const subject = subjectInput.value.trim();
+      const body = editor.innerHTML.trim();
+
+      if (!to) {
+        alert('Please enter recipient email address.');
+        toInput.focus();
+        return;
+      }
+      if (!validateEmail(to)) {
+        alert('Please enter a valid email address.');
+        toInput.focus();
+        return;
+      }
+      if (!subject) {
+        alert('Please enter the email subject.');
+        subjectInput.focus();
+        return;
+      }
+      if (!body) {
+        alert('Please enter the email body.');
+        editor.focus();
+        return;
+      }
+
+      // Prepare form data for submission including attachments
+      let formData = new FormData();
+      formData.append('to', to);
+      formData.append('subject', subject);
+      formData.append('body', body);
+
+      selectedFiles.forEach((file, index) => {
+        formData.append('attachments[]', file);
+      });
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending...';
+
+      fetch("{{ route('emails.send') }}", {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+        if (data.success) {
+          alert('Email sent and saved successfully!');
+          clearDraft();
+        } else {
+          alert('Error sending email: ' + (data.message || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+        alert('Network or server error sending email.');
+        console.error(error);
+      });
+    });
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email.toLowerCase());
+    }
   </script>
 
   @include('admin.footer')

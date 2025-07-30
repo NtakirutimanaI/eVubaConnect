@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Casts;
+namespace App\Models;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use DateTime;
